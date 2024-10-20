@@ -1,4 +1,4 @@
-package net.weibai.mechanical_soar.config;
+package net.weibai.jl_menu.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 

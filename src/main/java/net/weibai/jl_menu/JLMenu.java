@@ -1,8 +1,9 @@
-package net.weibai.mechanical_soar;
+package net.weibai.jl_menu;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -13,28 +14,39 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.weibai.mechanical_soar.config.MSInitConfig;
-import net.weibai.mechanical_soar.init.MSBlocks;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+import net.weibai.jl_menu.config.MSInitConfig;
+import net.weibai.jl_menu.item.JLMenuItem;
+import net.weibai.jl_menu.json.ReadJsonFile;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.util.Locale;
 
 
-@Mod(MechanicalSoarMod.MODID)
-public class MechanicalSoarMod {
-    public static final String MODID = "mechanical_soar";
-    private static final Logger LOGGER = LogUtils.getLogger();
-    public MechanicalSoarMod(FMLJavaModLoadingContext context) {
+@Mod(JLMenu.MODID)
+public class JLMenu {
+    public static final String MODID = "jl_menu";
+    public static final Logger LOGGER = LogUtils.getLogger();
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    public JLMenu(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
         bus.addListener(this::commonSetup);
-
-        MSBlocks.REGISTER.register(bus);
+        bus.addListener(this::serverStarting);
+        ITEMS.register(bus);
 
 
         MinecraftForge.EVENT_BUS.register(this);
-        context.registerConfig(ModConfig.Type.CLIENT, MSInitConfig.SPEC);
+        context.registerConfig(ModConfig.Type.SERVER, MSInitConfig.SPEC);
     }
-
+    public void serverStarting(FMLCommonSetupEvent event) {
+        File jlmenuDir = ReadJsonFile.jlmenuDir;
+        if (!jlmenuDir.exists()) {
+            jlmenuDir.mkdirs();
+        }
+    }
     private void commonSetup(final FMLCommonSetupEvent event) {
     }
 
@@ -57,4 +69,7 @@ public class MechanicalSoarMod {
     public static ResourceLocation prefix(String name) {
         return new ResourceLocation(MODID, name.toLowerCase(Locale.ROOT));
     }
+    public static final RegistryObject<Item> MENU_ITEM = ITEMS.register("menu_item",
+            () -> new JLMenuItem(new Item.Properties()));
+
 }

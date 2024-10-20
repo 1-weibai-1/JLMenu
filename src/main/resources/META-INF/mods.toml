@@ -23,15 +23,3 @@ description='''${mod_description}'''
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
-[[dependencies.${mod_id}]]
-modId="curios_api"
-mandatory=false
-versionRange="[0,)"
-ordering="NONE"
-side="BOTH"
-[[dependencies.${mod_id}]]
-modId="jei"
-mandatory=false
-versionRange="[0,)"
-ordering="NONE"
-side="BOTH"
